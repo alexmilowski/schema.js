@@ -185,9 +185,7 @@ RDFaDocumentationGenerator.prototype.apply = function(element) {
       propertiesTableBody(tbody,properties);
       var traceInheritence = function(table,classes) {
          for (var p=0; p<classes.length; p++) {
-            console.log(classes[p]);
             var properties = doc.data.getSubjects("schema:domainIncludes",classes[p]);
-            console.log(properties);
             if (properties.length==0) {
                continue;
             }
@@ -207,45 +205,84 @@ RDFaDocumentationGenerator.prototype.apply = function(element) {
 }
 
 RDFaDocumentationGenerator.prototype.generateSummary = function(parent) {
-   var descs = parent.ownerDocument.getElementsByType("schema:Class");
-   var classes = [];
-   for (var i=0; i<descs.length; i++) {
-      classes.push(parent.ownerDocument.data.getValues(descs[i].data.id,"schemajs:name")[0]);
-   }
-   descs = parent.ownerDocument.getElementsByType("schema:Property");
-   var properties = [];
-   for (var i=0; i<descs.length; i++) {
-      properties.push(parent.ownerDocument.data.getValues(descs[i].data.id,"schemajs:name")[0]);
-   }
-   classes.sort();
-   properties.sort();
+
    var container = parent.ownerDocument.createElement("div");
    container.className = "schema-summary";
    parent.appendChild(container);
+   
+   this.generateClassList(container);
+   this.generatePropertyList(container);
+
+}
+
+RDFaDocumentationGenerator.prototype._generateList = function(parent,list,isClass) {
+   var ul = parent.ownerDocument.createElement("ul");
+   parent.appendChild(ul);
+   for (var i=0; i<list.length; i++) {
+      var li = parent.ownerDocument.createElement("li");
+      var a = parent.ownerDocument.createElement("a");
+      a.setAttribute("href","#"+list[i]);
+      a.className = isClass ? "schema-class schema-local" : "schema-property schema-local";
+      a.appendChild(parent.ownerDocument.createTextNode(list[i].name));
+      li.appendChild(a);
+      if (list[i].description) {
+         li.appendChild(parent.ownerDocument.createTextNode(" — "));
+         var desc = parent.ownerDocument.createElement("span");
+         desc.className = "schema-description";
+         desc.appendChild(parent.ownerDocument.createTextNode(list[i].description));
+         li.appendChild(desc);
+      }
+      ul.appendChild(li);
+   }   
+   
+}
+
+RDFaDocumentationGenerator.prototype.generateClassList = function(parent, options) {
+   var descs = parent.ownerDocument.getElementsByType("schema:Class");
+   var classes = [];
+   for (var i=0; i<descs.length; i++) {
+      classes.push({
+         name: parent.ownerDocument.data.getValues(descs[i].data.id,"schemajs:name")[0],
+         description: parent.ownerDocument.data.getValues(descs[i].data.id,"schema:description")[0]
+      });
+   }
+   classes.sort(function (a,b) { return a.name.localeCompare(b.name)});
    var classesContainer = parent.ownerDocument.createElement("section");
    classesContainer.className = "schema-classes";
-   container.appendChild(classesContainer);
-   classesContainer.innerHTML = "<h2>Classes</h2>"
+   classesContainer.innerHTML = "<h2>Classes</h2><div class='content'/>"
+   if (options && options.insertBefore) {
+      parent.parentNode.insertBefore(classesContainer,parent);
+   } else if (options && options.replace) {
+      parent.parentNode.replaceChild(classesContainer,parent)
+   } else {
+      parent.appendChild(classesContainer);
+   }
+   this._generateList(classesContainer.firstChild.nextSibling,classes,"schema-class schema-local");
+}
+
+RDFaDocumentationGenerator.prototype.generatePropertyList = function(parent,options) {
+   var descs = parent.ownerDocument.getElementsByType("schema:Property");
+   var properties = [];
+   for (var i=0; i<descs.length; i++) {
+      properties.push({
+         name: parent.ownerDocument.data.getValues(descs[i].data.id,"schemajs:name")[0],
+         description: parent.ownerDocument.data.getValues(descs[i].data.id,"schema:description")[0]
+      });
+   }
+   properties.sort(function (a,b) { return a.name.localeCompare(b.name)});
+   
    var propsContainer = parent.ownerDocument.createElement("section");
    propsContainer.className = "schema-properties";
-   container.appendChild(propsContainer);
-   propsContainer.innerHTML = "<h2>Properties</h2>"
-   for (var i=0; i<classes.length; i++) {
-      var a = parent.ownerDocument.createElement("a");
-      a.setAttribute("href","#"+classes[i]);
-      a.className = "schema-class schema-local";
-      a.appendChild(parent.ownerDocument.createTextNode(classes[i]));
-      classesContainer.appendChild(a);
-      classesContainer.appendChild(parent.ownerDocument.createElement("br"));
+   propsContainer.innerHTML = "<h2>Properties</h2><div class='content'/>"
+   if (options && options.insertBefore) {
+      parent.parentNode.insertBefore(propsContainer,parent);
+   } else if (options && options.replace) {
+      parent.parentNode.replaceChild(propsContainer,parent)
+   } else {
+      parent.appendChild(propsContainer);
    }
-   for (var i=0; i<properties.length; i++) {
-      var a = parent.ownerDocument.createElement("a");
-      a.setAttribute("href","#"+properties[i]);
-      a.className = "schema-property schema-local";
-      a.appendChild(parent.ownerDocument.createTextNode(properties[i]));
-      propsContainer.appendChild(a);
-      propsContainer.appendChild(parent.ownerDocument.createElement("br"));
-   }
+   this._generateList(propsContainer.firstChild.nextSibling,properties,"schema-property schema-local");
+   
 }
 
 
