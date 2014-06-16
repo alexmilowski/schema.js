@@ -1,0 +1,67 @@
+
+.schema *[typeof=Class] {
+   margin-bottom: 2em;
+   margin-right: 5em;
+}
+
+.schema *[typeof=Class] h3 {
+   font-size: 1.3em;
+}
+
+.schema *[typeof=Class] table.schema-class-properties {
+   border-top: 1px solid black;
+   border-bottom: 1px solid black;
+   padding-top: 0.25em;
+   padding-bottom: 0.25em;
+   margin-left: 1em;
+}
+
+.schema *[typeof=Class] table th {
+   text-align: left;
+}
+
+.schema *[typeof=Property] {
+   margin-bottom: 2em;
+   margin-right: 5em;
+}
+
+.schema *[typeof=Property] *[property=description] {
+   margin-bottom: 2em;
+}
+
+.schema *[typeof=Property] h3 {
+   font-size: 1.3em;
+}
+
+.schema *[typeof=Property] h4 {
+   font-size: 1em;
+}
+
+.schema *[typeof=Property] .schema-property-definition {
+   border-top: 1pt solid rgb(200,200,200);
+   margin-left: 1em;
+}
+
+.schema .schema-summary th {
+   text-align: left;
+}
+.schema .schema-summary td {
+   padding-right: 2em;
+}
+.schema .schema-summary tr {
+   vertical-align: top;
+}
+
+.schema *[property=rangeIncludes][resource] {
+   font-style: italic;
+}
+
+.schema a *[property=rangeIncludes][resource] {
+   font-style: normal;
+}
+
+.schema .schema-external {
+   font-style: italic;
+}
+
+
