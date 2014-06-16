@@ -6,16 +6,16 @@ It relies on the [Green Turtle](https://github.com/alexmilowski/green-turtle) RD
 
 The minimal invocation is:
 
-   <script type="text/javascript" src="RDFa.js">//</script>
-   <script type="text/javascript" src="schema.js">//</script>
-   <script type="text/javascript">
-   window.addEventListener("rdfa.loaded",function() {
-      console.log("Processing schema...");
-      var schemaProcessor = new RDFaDocumentationGenerator();
-      schemaProcessor.apply(document.body);
-      schemaProcessor.generateSummary(document.getElementById("schema.summary"));
-   });
-  </script>
+    <script type="text/javascript" src="RDFa.js">//</script>
+    <script type="text/javascript" src="schema.js">//</script>
+    <script type="text/javascript">
+    window.addEventListener("rdfa.loaded",function() {
+       console.log("Processing schema...");
+       var schemaProcessor = new RDFaDocumentationGenerator();
+       schemaProcessor.apply(document.body);
+       schemaProcessor.generateSummary(document.getElementById("schema.summary"));
+    });
+   </script>
 
 The script does not automatically invoke itself and so you must first apply it to the element that contains the schema and ask it to generate various other information.  By default, the `apply()` method will complete all the internal references and expand out properties for each class.  The `generateSummary()` method adds a list of class and properties defined by the schema.
 
