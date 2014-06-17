@@ -221,7 +221,7 @@ RDFaDocumentationGenerator.prototype._generateList = function(parent,list,isClas
    for (var i=0; i<list.length; i++) {
       var li = parent.ownerDocument.createElement("li");
       var a = parent.ownerDocument.createElement("a");
-      a.setAttribute("href","#"+list[i]);
+      a.setAttribute("href","#"+list[i].name);
       a.className = isClass ? "schema-class schema-local" : "schema-property schema-local";
       a.appendChild(parent.ownerDocument.createTextNode(list[i].name));
       li.appendChild(a);
