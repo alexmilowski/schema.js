@@ -49,7 +49,7 @@ RDFaDocumentationGenerator.prototype.apply = function(element) {
 
       var container = doc.createElement("div");
       container.className = "schema-property-definition";
-      container.innerHTML = "<div class='schema-property-range'><h4>Values Expected</h4></div><div class='schema-property-domain'><h4>Used by Types</h4></div><div class='clear'/>";
+      container.innerHTML = "<div class='schema-property-range'><h4>Values Expected</h4></div><div class='schema-property-domain'><h4>Used by Clases</h4></div><div class='clear'/>";
       properties[i].appendChild(container);
       
       var rangeContainer = container.firstChild;
@@ -158,17 +158,44 @@ RDFaDocumentationGenerator.prototype.apply = function(element) {
                var a = doc.createElement("a");
                a.setAttribute("href","#"+sname);
                a.innerHTML = sname;
-               a.className = "schema-property schema-local";
+               a.className = "schema-class schema-local";
                subclassesContainer.appendChild(a);
             } else {
                var span = doc.createElement("span");
-               span.className = "schema-property schema-external";
+               span.className = "schema-class schema-external";
                var type = doc.data.shorten(subclasses[s]);
                span.innerHTML = type ? type : subclasses[s];
                subclassesContainer.appendChild(span);
             }
          }
       }
+      var usedBy = doc.data.getSubjects("schema:rangeIncludes",descs[i].data.id);
+      if (usedBy.length>0) {
+         var usedByContainer = doc.createElement("p");
+         usedByContainer.className = "schema-used-by-property";
+         usedByContainer.appendChild(doc.createTextNode("Used by: "));
+         descs[i].appendChild(usedByContainer);
+         for (var s=0; s<usedBy.length; s++) {
+            if (s>0) {
+               usedByContainer.appendChild(doc.createTextNode(", "));
+            }
+            if (usedBy[s].indexOf(vocab)==0) {
+               var sname = usedBy[s].substring(vocab.length);
+               var a = doc.createElement("a");
+               a.setAttribute("href","#"+sname);
+               a.innerHTML = sname;
+               a.className = "schema-property schema-local";
+               usedByContainer.appendChild(a);
+            } else {
+               var span = doc.createElement("span");
+               span.className = "schema-property schema-external";
+               var type = doc.data.shorten(usedBy[s]);
+               span.innerHTML = type ? type : usedBy[s];
+               usedByContainer.appendChild(span);
+            }
+         }
+      }
+      
       var table = doc.createElement("table");
       table.className = "schema-class-properties";
       table.innerHTML = "<thead><tr><th>Property</th><th>Value</th><th>Description</th></tr></thead><tbody/>";
