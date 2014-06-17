@@ -143,6 +143,32 @@ RDFaDocumentationGenerator.prototype.apply = function(element) {
          continue;
       }
       
+      var subclasses = doc.data.getSubjects("schema:subClassOf",descs[i].data.id);
+      if (subclasses.length>0) {
+         var subclassesContainer = doc.createElement("p");
+         subclassesContainer.className = "schema-subclasses";
+         subclassesContainer.appendChild(doc.createTextNode("Known subclasses: "));
+         descs[i].appendChild(subclassesContainer);
+         for (var s=0; s<subclasses.length; s++) {
+            if (s>0) {
+               subclassesContainer.appendChild(doc.createTextNode(", "));
+            }
+            if (subclasses[s].indexOf(vocab)==0) {
+               var sname = subclasses[s].substring(vocab.length);
+               var a = doc.createElement("a");
+               a.setAttribute("href","#"+sname);
+               a.innerHTML = sname;
+               a.className = "schema-property schema-local";
+               subclassesContainer.appendChild(a);
+            } else {
+               var span = doc.createElement("span");
+               span.className = "schema-property schema-external";
+               var type = doc.data.shorten(subclasses[s]);
+               span.innerHTML = type ? type : subclasses[s];
+               subclassesContainer.appendChild(span);
+            }
+         }
+      }
       var table = doc.createElement("table");
       table.className = "schema-class-properties";
       table.innerHTML = "<thead><tr><th>Property</th><th>Value</th><th>Description</th></tr></thead><tbody/>";
