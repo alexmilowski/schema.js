@@ -214,6 +214,9 @@ RDFaDocumentationGenerator.prototype.apply = function(element) {
             row.appendChild(cell);
             cell = doc.createElement("td");
             for (var j=0; ranges && j<ranges.length; j++) {
+               if (j>0) {
+                  cell.appendChild(doc.createElement("br"));
+               }
                if (ranges[j].indexOf(vocab)==0) {
                   var rangeName = ranges[j].substring(vocab.length);
                   var a = doc.createElement("a");
